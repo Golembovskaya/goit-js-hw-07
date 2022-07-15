@@ -28,14 +28,32 @@ function bigImg(event) {
     }
     const originalImg = event.target.dataset.source;
    const instance = basicLightbox.create(`
-    <img src="${originalImg}" width="800" height="600">`)
+    <img src="${originalImg}" width="800" height="600">`, 
+    {
+      onShow: (instance) => {
+        window.addEventListener("keydown", onEscPressClose);
+        function onEscPressClose(event) {
+          if (event.code === "Escape") {
+            instance.close();
+            window.removeEventListener("keydown", onEscPressClose);
+          }
+        }
+      },
+    },
+    {
+      onClose: (instance) => {
+        instance.close();
+        galleryDiv.removeEventListener("click", onShowImgByClick);
+      }
+    }
+  );
 
     instance.show();
-    document.addEventListener('keydown', (event) => {
-        if (event.code === 'Escape') {
-            instance.close();
-        }
-    })
+    //document.addEventListener('keydown', (event) => {
+        //if (event.code === 'Escape') {
+          //  instance.close();
+        //}
+   // })
 };
 
 galleryDiv.addEventListener('click', bigImg);
