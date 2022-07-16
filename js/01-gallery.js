@@ -21,39 +21,31 @@ const gallerySample = galleryItems.map((item) => {
 galleryDiv.innerHTML = gallerySample;
 
 
-function bigImg(event) {
-    event.preventDefault();
-    if (event.target === event.currenTarget) {
-        return;
-    }
-    const originalImg = event.target.dataset.source;
-   const instance = basicLightbox.create(`
-    <img src="${originalImg}" width="800" height="600">`, 
-    {
-      onShow: (instance) => {
-        window.addEventListener("keydown", onEscPressClose);
-        function onEscPressClose(event) {
-          if (event.code === "Escape") {
-            instance.close();
-            window.removeEventListener("keydown", onEscPressClose);
-          }
-        }
-      },
-    },
-    {
-      onClose: (instance) => {
-        instance.close();
-        galleryDiv.removeEventListener("click", onShowImgByClick);
-      }
-    }
-  );
-
-    instance.show();
-    //document.addEventListener('keydown', (event) => {
-        //if (event.code === 'Escape') {
-          //  instance.close();
-        //}
-   // })
-};
-
 galleryDiv.addEventListener('click', bigImg);
+const instance = basicLightbox.create(`<img class="modal-img" src="">`, {
+  onShow: (instance) => {
+    window.addEventListener("keydown", onEscClick);
+  },
+  onClose: (instance) => {
+    window.removeEventListener("keydown", onEscClick);
+  },
+});
+function bigImg(event) {
+  event.preventDefault();
+  if (event.target.nodeName !== 'IMG') {
+    return;
+  }
+  instance.element().querySelector('img').src = event.target.dataset.source;
+  instance.show();
+}
+function onEscClick(event) {
+  if (event.key === 'Escape') {
+    instance.close();
+    return;
+  }
+}
+
+
+  
+  
+   
